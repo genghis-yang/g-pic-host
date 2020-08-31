@@ -1,21 +1,24 @@
 package info.genghis.pichost.server
 
-import cats.effect.{ConcurrentEffect, ContextShift, IO, Sync, Timer}
+import cats.effect.{ConcurrentEffect, ContextShift, Timer}
 import cats.implicits._
 import fs2.Stream
-import info.genghis.pichost.{HelloWorld, Jokes}
-import info.genghis.pichost.config.{AppConfig, Environment, AppConfigLoader}
-import info.genghis.pichost.config.AppConfigLoader._
+import info.genghis.pichost.config.AppConfigLoader
 import info.genghis.pichost.service.PicService
+import info.genghis.pichost.{HelloWorld, Jokes}
 import org.http4s.client.blaze.BlazeClientBuilder
 import org.http4s.implicits._
 import org.http4s.server.blaze.BlazeServerBuilder
 import org.http4s.server.middleware.Logger
+
 import scala.concurrent.ExecutionContext.global
 
 object PicHostServer {
 
-  def stream[M[_]: ConcurrentEffect : AppConfigLoader](implicit T: Timer[M], C: ContextShift[M]): Stream[M, Nothing] = {
+  def stream[M[_]: ConcurrentEffect: AppConfigLoader](implicit
+    T: Timer[M],
+    C: ContextShift[M]
+  ): Stream[M, Nothing] = {
     for {
       client <- BlazeClientBuilder[M](global).stream
       helloWorldAlg = HelloWorld.impl[M]
