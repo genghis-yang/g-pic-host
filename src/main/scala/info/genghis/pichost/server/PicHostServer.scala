@@ -5,7 +5,6 @@ import cats.implicits._
 import fs2.Stream
 import info.genghis.pichost.config.AppConfigLoader
 import info.genghis.pichost.service.PicService
-import info.genghis.pichost.{HelloWorld, Jokes}
 import org.http4s.client.blaze.BlazeClientBuilder
 import org.http4s.implicits._
 import org.http4s.server.blaze.BlazeServerBuilder
@@ -21,8 +20,6 @@ object PicHostServer {
   ): Stream[M, Nothing] = {
     for {
       client <- BlazeClientBuilder[M](global).stream
-      helloWorldAlg = HelloWorld.impl[M]
-      jokeAlg = Jokes.impl[M](client)
       picService = PicService(client)
 
       // Combine Service Routes into an HttpApp.
@@ -30,13 +27,11 @@ object PicHostServer {
       // want to extract a segments not checked
       // in the underlying routes.
       httpApp = (
-        PicHostRoutes.picRoutes[M](picService) <+>
-        PicHostRoutes.helloWorldRoutes[M](helloWorldAlg) <+>
-        PicHostRoutes.jokeRoutes[M](jokeAlg)
+        PicHostRoutes.picRoutes[M](picService)
       ).orNotFound
 
       // With Middlewares in place
-      finalHttpApp = Logger.httpApp(true, true)(httpApp)
+      finalHttpApp = Logger.httpApp(true, false)(httpApp)
 
       exitCode <- BlazeServerBuilder[M](global)
         .bindHttp(8080, "0.0.0.0")
