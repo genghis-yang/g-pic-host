@@ -11,8 +11,10 @@ object Main extends IOApp {
       val environment = new Environment[IO](sys.env)
       (
         environment.env[String]("USER_NAME"),
-        environment.env[String]("ACCESS_TOKEN")
-        ).mapN(AppConfig.apply)
+        environment.env[String]("ACCESS_TOKEN"),
+        environment.env[Int]("SERVER_PORT"),
+        environment.env[String]("SERVER_IP")
+      ).mapN(AppConfig.apply)
     }
   }
 

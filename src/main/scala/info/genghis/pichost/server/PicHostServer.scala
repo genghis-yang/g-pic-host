@@ -1,7 +1,6 @@
 package info.genghis.pichost.server
 
-import cats.effect.{ConcurrentEffect, ContextShift, Timer}
-import cats.implicits._
+import cats.effect.{ConcurrentEffect, Timer}
 import fs2.Stream
 import info.genghis.pichost.config.AppConfigLoader
 import info.genghis.pichost.service.PicService
@@ -14,11 +13,9 @@ import scala.concurrent.ExecutionContext.global
 
 object PicHostServer {
 
-  def stream[M[_]: ConcurrentEffect: AppConfigLoader](implicit
-    T: Timer[M],
-    C: ContextShift[M]
-  ): Stream[M, Nothing] = {
+  def stream[M[_]: ConcurrentEffect: AppConfigLoader](implicit T: Timer[M]): Stream[M, Nothing] = {
     for {
+      appConfig <- Stream.eval(implicitly[AppConfigLoader[M]].load)
       client <- BlazeClientBuilder[M](global).stream
       picService = PicService(client)
 
@@ -34,7 +31,7 @@ object PicHostServer {
       finalHttpApp = Logger.httpApp(true, false)(httpApp)
 
       exitCode <- BlazeServerBuilder[M](global)
-        .bindHttp(8080, "0.0.0.0")
+        .bindHttp(appConfig.serverPort, appConfig.serverIp)
         .withHttpApp(finalHttpApp)
         .serve
     } yield exitCode
