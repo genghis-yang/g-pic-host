@@ -71,6 +71,8 @@ scalacOptions ++= Seq(
 // Note that the REPL can’t really cope with -Ywarn-unused:imports or -Xfatal-warnings so you should turn them off for the console.
 scalacOptions in (Compile, console) --= Seq("-Ywarn-unused:imports", "-Xfatal-warnings")
 
+scalacOptions in Test ++= Seq("-Yrangepos")
+
 graalVMNativeImageOptions ++= Seq(
   "--allow-incomplete-classpath",
   "--enable-https",
