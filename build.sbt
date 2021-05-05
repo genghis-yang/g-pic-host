@@ -1,26 +1,27 @@
-val CatsVersion = "2.0.0"
-val Http4sVersion = "0.21.5"
+val CatsVersion = "2.6.0"
+val Http4sVersion = "0.21.22"
 val CirceVersion = "0.13.0"
-val Specs2Version = "4.10.0"
+val Specs2Version = "4.11.0"
 val LogbackVersion = "1.2.3"
+val GraalvmVersion = "21.1.0"
 
 lazy val root = (project in file("."))
   .settings(
     organization := "info.genghis",
-    name := "gPicHost",
+    name := "gpichost",
     version := "0.0.1-SNAPSHOT",
-    scalaVersion := "2.13.2",
+    scalaVersion := "2.13.5",
     libraryDependencies ++= Seq(
-      "org.typelevel"   %% "cats-core"           % CatsVersion,
-      "org.http4s"      %% "http4s-blaze-server" % Http4sVersion,
-      "org.http4s"      %% "http4s-blaze-client" % Http4sVersion,
-      "org.http4s"      %% "http4s-circe"        % Http4sVersion,
-      "org.http4s"      %% "http4s-dsl"          % Http4sVersion,
-      "io.circe"        %% "circe-generic"       % CirceVersion,
-      "org.specs2"      %% "specs2-core"         % Specs2Version % "test",
-      "ch.qos.logback"  %  "logback-classic"     % LogbackVersion,
-      "org.graalvm.nativeimage" % "svm"          % "20.2.0" % Provided,
-      "org.scalameta"   %% "svm-subs"            % "20.2.0"
+      "org.typelevel"           %% "cats-core"           % CatsVersion,
+      "org.http4s"              %% "http4s-blaze-server" % Http4sVersion,
+      "org.http4s"              %% "http4s-blaze-client" % Http4sVersion,
+      "org.http4s"              %% "http4s-circe"        % Http4sVersion,
+      "org.http4s"              %% "http4s-dsl"          % Http4sVersion,
+      "io.circe"                %% "circe-generic"       % CirceVersion,
+      "ch.qos.logback"          %  "logback-classic"     % LogbackVersion,
+      "org.specs2"              %% "specs2-core"         % Specs2Version   % Test,
+      "org.graalvm.nativeimage" % "svm"                  % GraalvmVersion  % Provided,
+//      "org.scalameta"   %% "svm-subs"            % "20.2.0"
     ),
     addCompilerPlugin("org.typelevel" %% "kind-projector"     % "0.10.3"),
     addCompilerPlugin("com.olegpy"    %% "better-monadic-for" % "0.3.1")
@@ -45,7 +46,7 @@ scalacOptions ++= Seq(
   "-Xlint:inaccessible",               // Warn about inaccessible types in method signatures.
   "-Xlint:infer-any",                  // Warn when a type argument is inferred to be `Any`.
   "-Xlint:missing-interpolator",       // A string literal appears to be missing an interpolator id.
-  "-Xlint:nullary-override",           // Warn when non-nullary `def f()' overrides nullary `def f'.
+//  "-Xlint:nullary-override",           // Warn when non-nullary `def f()' overrides nullary `def f'.
   "-Xlint:nullary-unit",               // Warn when nullary methods return Unit.
   "-Xlint:option-implicit",            // Option.apply used implicit view.
   "-Xlint:package-object-classes",     // Class or object defined in package object.
@@ -65,28 +66,32 @@ scalacOptions ++= Seq(
   "-Ywarn-value-discard",              // Warn when non-Unit expression results are unused.
   "-Ybackend-parallelism", "8",        // Enable paralellisation — change to desired number!
   "-Ycache-plugin-class-loader:last-modified", // Enables caching of classloaders for compiler plugins
-  "-Ycache-macro-class-loader:last-modified" // and macro definitions. This can lead to performance improvements.
+  "-Ycache-macro-class-loader:last-modified"   // and macro definitions. This can lead to performance improvements.
 )
 
 // Note that the REPL can’t really cope with -Ywarn-unused:imports or -Xfatal-warnings so you should turn them off for the console.
-scalacOptions in (Compile, console) --= Seq("-Ywarn-unused:imports", "-Xfatal-warnings")
+Compile / console / scalacOptions --= Seq("-Ywarn-unused:imports", "-Xfatal-warnings")
 
-scalacOptions in Test ++= Seq("-Yrangepos")
+Test / scalacOptions ++= Seq("-Yrangepos")
 
 graalVMNativeImageOptions ++= Seq(
-  "--allow-incomplete-classpath",
-  "--enable-https",
-  "--enable-http",
-  "--enable-all-security-services",
-  "--initialize-at-build-time=scala,scala.runtime.Statics",
-  "--libc=musl",
-  "--no-fallback",
-  "--report-unsupported-elements-at-runtime",
-  "--verbose",
-  "--static",
+  "--allow-incomplete-classpath",                           // allow the image build with an incomplete class path. Report type resolution errors at runtime when they are accessed the first time, instead of during the image build.
+  "--enable-https",                                         // enable https support in a generated image.
+  "--enable-http",                                          // enable http support in a generated image.
+  "--enable-all-security-services",                         // add all security service classes to the generated image.
+//  "--initialize-at-build-time=scala,scala.runtime.Statics", // a comma-separated list of packages and classes (and implicitly all of their subclasses) that must be initialized at runtime and not during image building. An empty string is currently not supported.
+  "--libc=musl",                                            // selects the libc implementation to use. Available implementations: glibc, musl, bionic
+  "--no-fallback",                                          // build stand-alone image or report failure
+//  "--report-unsupported-elements-at-runtime",               // report usage of unsupported methods and fields at run time when they are accessed the first time, instead of as an error during image building
+  "--verbose",                                              // enable verbose output
+  "--static",                                               // build a statically-linked executable (requires libc and zlib static libraries).
+  "--no-server",
   "-H:+ReportExceptionStackTraces",
-  "-H:+TraceClassInitialization",
+//  "-H:+TraceClassInitialization",
+  "--trace-object-instantiation=java.util.Random",
   "-H:+AddAllCharsets",
+  "-J-Xms2048m",
+  "-J-Xmx6144m"
 )
 
 enablePlugins(GraalVMNativeImagePlugin)
