@@ -5,27 +5,25 @@ val Specs2Version = "4.11.0"
 val LogbackVersion = "1.2.3"
 val GraalvmVersion = "21.1.0"
 
-lazy val root = (project in file("."))
-  .settings(
-    organization := "info.genghis",
-    name := "gpichost",
-    version := "0.0.1-SNAPSHOT",
-    scalaVersion := "2.13.5",
-    libraryDependencies ++= Seq(
-      "org.typelevel"           %% "cats-core"           % CatsVersion,
-      "org.http4s"              %% "http4s-blaze-server" % Http4sVersion,
-      "org.http4s"              %% "http4s-blaze-client" % Http4sVersion,
-      "org.http4s"              %% "http4s-circe"        % Http4sVersion,
-      "org.http4s"              %% "http4s-dsl"          % Http4sVersion,
-      "io.circe"                %% "circe-generic"       % CirceVersion,
-      "ch.qos.logback"          %  "logback-classic"     % LogbackVersion,
-      "org.specs2"              %% "specs2-core"         % Specs2Version   % Test,
-      "org.graalvm.nativeimage" % "svm"                  % GraalvmVersion  % Provided,
-//      "org.scalameta"   %% "svm-subs"            % "20.2.0"
-    ),
-    addCompilerPlugin("org.typelevel" %% "kind-projector"     % "0.10.3"),
-    addCompilerPlugin("com.olegpy"    %% "better-monadic-for" % "0.3.1")
-  )
+scalaVersion := "2.13.5"
+organization := "info.genghis"
+name := "gpichost"
+version := "0.1.1"
+
+libraryDependencies ++= Seq(
+  "org.typelevel"           %% "cats-core"           % CatsVersion,
+  "org.http4s"              %% "http4s-blaze-server" % Http4sVersion,
+  "org.http4s"              %% "http4s-blaze-client" % Http4sVersion,
+  "org.http4s"              %% "http4s-circe"        % Http4sVersion,
+  "org.http4s"              %% "http4s-dsl"          % Http4sVersion,
+  "io.circe"                %% "circe-generic"       % CirceVersion,
+  "ch.qos.logback"          %  "logback-classic"     % LogbackVersion,
+  "org.specs2"              %% "specs2-core"         % Specs2Version   % Test,
+  "org.graalvm.nativeimage" % "svm"                  % GraalvmVersion  % Provided,
+)
+
+addCompilerPlugin("org.typelevel" %% "kind-projector"     % "0.10.3")
+addCompilerPlugin("com.olegpy"    %% "better-monadic-for" % "0.3.1")
 
 scalacOptions ++= Seq(
   "-deprecation",                      // Emit warning and location for usages of deprecated APIs.
@@ -46,7 +44,6 @@ scalacOptions ++= Seq(
   "-Xlint:inaccessible",               // Warn about inaccessible types in method signatures.
   "-Xlint:infer-any",                  // Warn when a type argument is inferred to be `Any`.
   "-Xlint:missing-interpolator",       // A string literal appears to be missing an interpolator id.
-//  "-Xlint:nullary-override",           // Warn when non-nullary `def f()' overrides nullary `def f'.
   "-Xlint:nullary-unit",               // Warn when nullary methods return Unit.
   "-Xlint:option-implicit",            // Option.apply used implicit view.
   "-Xlint:package-object-classes",     // Class or object defined in package object.
