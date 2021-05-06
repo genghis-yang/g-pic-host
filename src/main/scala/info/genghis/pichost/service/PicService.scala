@@ -5,11 +5,9 @@ import cats.implicits._
 import fs2.Chunk
 import info.genghis.pichost.config.AppConfigLoader
 import info.genghis.pichost.error.GithubRequestError
-import org.http4s.Method.GET
 import org.http4s._
 import org.http4s.circe.CirceEntityDecoder._
 import org.http4s.client.Client
-import org.http4s.client.dsl.Http4sClientDsl
 import org.http4s.headers.{`Content-Type`, Authorization}
 
 import java.util.Base64
@@ -22,7 +20,6 @@ object PicService {
   val rawType = "application/vnd.github.VERSION.raw"
 
   def apply[M[_]: Sync: AppConfigLoader](httpClient: Client[M]): PicService[M] = new PicService[M] {
-    val dsl = new Http4sClientDsl[M] {}
     override def getPic(repo: String, identity: String): M[Chunk[Byte]] = for {
       appConfig <- implicitly[AppConfigLoader[M]].load
       uri <- Uri
