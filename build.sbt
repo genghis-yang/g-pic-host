@@ -8,7 +8,7 @@ val GraalvmVersion = "21.1.0"
 scalaVersion := "2.13.5"
 organization := "info.genghis"
 name := "gpichost"
-version := "0.1.1"
+version := "1.0.1"
 
 libraryDependencies ++= Seq(
   "org.typelevel"           %% "cats-core"           % CatsVersion,
