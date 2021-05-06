@@ -15,7 +15,7 @@ trait AppConfigLoader[M[_]] {
 }
 
 object AppConfigLoader {
-  implicit object appConfigLoader extends AppConfigLoader[IO] {
+  implicit object AppConfigLoader extends AppConfigLoader[IO] {
     override def load: IO[AppConfig] = {
       val environment = new Environment[IO](sys.env)
       (

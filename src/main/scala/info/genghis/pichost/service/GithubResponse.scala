@@ -1,7 +1,7 @@
 package info.genghis.pichost.service
 
-import io.circe.Decoder
-import io.circe.generic.semiauto.deriveDecoder
+import io.circe._
+import io.circe.generic.semiauto._
 
 case class GithubResponse(
   name: String,
@@ -9,19 +9,22 @@ case class GithubResponse(
   sha: String,
   size: Long,
   url: String,
-  html_url: String,
-  git_url: String,
-  download_url: String,
+  htmlUrl: String,
+  gitUrl: String,
+  downloadUrl: String,
   `type`: String,
   content: String,
   encoding: String,
-  _links: GithubLinks
+  links: GithubLinks
 )
 
 case class GithubLinks(self: String, git: String, html: String)
 
 object GithubResponse {
-  implicit val githubResponseDecoder: Decoder[GithubResponse] = deriveDecoder
+  implicit val githubResponseDecoder: Decoder[GithubResponse] =
+    Decoder.forProduct12("name", "path", "sha", "size", "url", "html_url", "git_url", "download_url", "type", "content", "encoding", "_links")(
+      GithubResponse.apply
+    )
 }
 
 object GithubLinks {

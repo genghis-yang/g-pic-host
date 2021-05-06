@@ -13,7 +13,7 @@ import scala.concurrent.ExecutionContext.global
 
 object PicHostServer {
 
-  def stream[M[_]: ConcurrentEffect: AppConfigLoader](implicit T: Timer[M]): Stream[M, Nothing] = {
+  def stream[M[_]: ConcurrentEffect: AppConfigLoader](implicit timer: Timer[M]): Stream[M, Nothing] = {
     for {
       appConfig <- Stream.eval(implicitly[AppConfigLoader[M]].load)
       client <- BlazeClientBuilder[M](global).stream

@@ -23,21 +23,18 @@ object PicService {
 
   def apply[M[_]: Sync: AppConfigLoader](httpClient: Client[M]): PicService[M] = new PicService[M] {
     val dsl = new Http4sClientDsl[M] {}
-    import dsl._
     override def getPic(repo: String, identity: String): M[Chunk[Byte]] = for {
       appConfig <- implicitly[AppConfigLoader[M]].load
       uri <- Uri
         .fromString(s"https://api.github.com/repos/${appConfig.username}/$repo/contents/pictures/$identity")
         .fold(err => Sync[M].raiseError(GithubRequestError(err.message)), uri => Sync[M].delay(uri))
       response <- httpClient.expect[GithubResponse](
-        GET(uri).map(
-          _.withHeaders(
-            Headers.of(
-              Header(Authorization.name.value, "token " + appConfig.accessToken),
-              Header(`Content-Type`.name.value, rawType)
-            )
+        Request[M]()
+          .withUri(uri)
+          .withHeaders(
+            Header(Authorization.name.value, "token " + appConfig.accessToken),
+            Header(`Content-Type`.name.value, rawType)
           )
-        )
       )
       decodedContent <- Sync[M].delay(Base64.getDecoder.decode(response.content.replace("\n", "")))
     } yield Chunk.bytes(decodedContent)
