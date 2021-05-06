@@ -4,10 +4,10 @@ import cats.effect.IO
 import cats.implicits._
 
 final case class AppConfig(
-    username: String,
-    accessToken: String,
-    serverPort: Int = 8080,
-    serverIp: String = "0.0.0.0"
+  username: String,
+  accessToken: String,
+  serverPort: Int = 8080,
+  serverIp: String = "0.0.0.0"
 )
 
 trait AppConfigLoader[M[_]] {

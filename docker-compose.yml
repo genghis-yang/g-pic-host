@@ -1,22 +1,15 @@
 version: "3"
 services:
-  dev:
+  base: &base
     build:
       context: .
     working_dir: /app
     volumes:
       - ".:/app"
-      - ivy2cache:/root/.ivy2
-      - sbtcache:/root/.sbt
-    deploy:
-      resources:
-        limits:
-          cpus: "3"
-          memory: 8G
-        reservations:
-          memory: 4G
+      - ~/.ivy2:/root/.ivy2
+      - ~/.sbt:/root/.sbt
     entrypoint: bash
 
-volumes:
-  ivy2cache:
-  sbtcache:
+  build-native-image:
+    <<: *base
+    entrypoint: sbt ni

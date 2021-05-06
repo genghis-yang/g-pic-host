@@ -90,7 +90,7 @@ graalVMNativeImageOptions ++= Seq(
 //  "-H:+TraceClassInitialization",
   "--trace-object-instantiation=java.util.Random",
   "-H:+AddAllCharsets",
-  "-J-Xms2048m",
+  "-J-Xms3072m",
   "-J-Xmx6144m"
 )
 

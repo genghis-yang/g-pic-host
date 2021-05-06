@@ -3,6 +3,7 @@ name: Build
 on:
   push:
     branches: [ master ]
+    tags-ignore: [ 'v*' ]
   pull_request:
     branches: [ master ]
 
@@ -18,5 +19,7 @@ jobs:
       with:
         java-version: '11'
         distribution: 'adopt'
+    - name: Check format
+      run: sbt scalafmtCheckAll
     - name: Run tests
       run: sbt test

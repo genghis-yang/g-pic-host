@@ -7,11 +7,11 @@ import org.specs2.specification.Scope
 class EnvironmentSpec extends Specification {
   "Environment" >> {
     "get string value from environment" >> new EnvironmentSpecScope {
-      environment.env[String]("StringKey").unsafeRunSync must_== "StringValue"
+      environment.env[String]("StringKey").unsafeRunSync() must_== "StringValue"
     }
 
     "get integer value from environment" >> new EnvironmentSpecScope {
-      environment.env[Int]("IntegerKey").unsafeRunSync must_== 1
+      environment.env[Int]("IntegerKey").unsafeRunSync() must_== 1
     }
   }
 }
