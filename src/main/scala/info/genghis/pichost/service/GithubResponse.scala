@@ -12,7 +12,7 @@ case class GithubResponse(
   htmlUrl: String,
   gitUrl: String,
   downloadUrl: String,
-  `type`: String,
+  resType: String,
   content: String,
   encoding: String,
   links: GithubLinks
