@@ -1,6 +1,6 @@
-# g-pic-host
+# gPicHost
 
-[![Build](https://github.com/genghis-yang/g-pic-host/actions/workflows/build.yml/badge.svg)](https://github.com/genghis-yang/g-pic-host/actions/workflows/build.yml)
+[![Build](https://github.com/genghis-yang/gpichost/actions/workflows/build.yml/badge.svg)](https://github.com/genghis-yang/gpichost/actions/workflows/build.yml)
 
 This is a picture hosting app using github as the backend.
 
@@ -29,3 +29,4 @@ See [issue for insufficient memory](https://github.com/oracle/graal/issues/1184)
 It should be at least 4G heap space. I set `-Xmx=6144m` for `graalVMNativeImageOptions`.
 According to [GitHub Actions Documentation](https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources),
 a Linux runner has 7 GB of RAM memory. It satisfies GraalVM requirement.
+
